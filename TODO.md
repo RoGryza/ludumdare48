@@ -1,0 +1,1 @@
+* Add asset pipeline to parcel

@@ -28,7 +28,7 @@ jobs:
         git fetch origin gh-pages gh-pages
         git checkout gh-pages
         rm -rf docs
-        mv build cocs
+        mv dist cocs
         // TODO symlinks don't seem to work..
         cp -r assets docs && rm -r docs/raw
         touch docs/.nojekyll

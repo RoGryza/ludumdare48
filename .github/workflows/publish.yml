@@ -28,7 +28,9 @@ jobs:
         git merge main
         rm -rf docs
         yarn build
-        ln -s ../assets docs
+        // TODO symlinks don't seem to work..
+        cp -r assets docs && rm -r docs/raw
+        touch docs/.nojekyll
         git add docs
         git commit -m 'Automated release'
         git push

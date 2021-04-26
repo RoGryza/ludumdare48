@@ -24,11 +24,11 @@ jobs:
       run: |
         git config --global user.name 'Automated'
         git config --global user.email 'trololo@automated.trolololo'
+        yarn build
         git fetch origin gh-pages gh-pages
         git checkout gh-pages
-        git merge main
         rm -rf docs
-        yarn build
+        mv build cocs
         // TODO symlinks don't seem to work..
         cp -r assets docs && rm -r docs/raw
         touch docs/.nojekyll

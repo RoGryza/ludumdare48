@@ -22,7 +22,7 @@ jobs:
     - run: yarn install
     - uses: actions/checkout@v2
       with:
-        rev: gh-pages
+        ref: gh-pages
         clean: false
     - run: |
         git config --global user.name 'Automated'

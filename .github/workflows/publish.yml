@@ -30,7 +30,7 @@ jobs:
         git checkout gh-pages
         rm -rf docs
         mv dist docs
-        cp -r assets docs && rm -r docs/raw
+        cp -r assets docs && rm -r docs/assets/raw
         touch docs/.nojekyll
         git add docs
         git commit -m 'Automated release'

@@ -42,6 +42,8 @@ PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
     let state: GameState = new LoadingState(app);
     state.afterEnter();
     let lastTime = 0.0;
+
+    // TODO don't need to tick on every render
     function renderLoop(currentTime: number) {
         const delta = currentTime - lastTime;
         lastTime = currentTime;

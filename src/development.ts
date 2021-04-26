@@ -18,6 +18,11 @@ export type Variables = {
     [K in keyof VariableTypes]: Variable<VariableTypes[K]>
 }
 
+export interface NumberRange {
+    min: number,
+    max: number,
+}
+
 export abstract class Variable<T> extends PIXI.utils.EventEmitter<'change'> {
     public readonly defaultValue: T;
 

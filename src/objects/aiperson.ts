@@ -1,5 +1,6 @@
 import { AiAction, handleAction } from "../ai/action";
 import { Behaviour } from "../ai/behaviour";
+import { Variable } from "../development";
 import { Resources, Textures } from "../states";
 import { Person } from "./person";
 
@@ -13,7 +14,6 @@ export class AiPerson extends Person {
         resources: Resources,
         texture: Textures,
         emptyHand: Textures | null,
-        public speed: number,
     ) {
         super(resources, texture, emptyHand);
         this.actions = [];

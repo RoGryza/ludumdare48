@@ -26,7 +26,7 @@ const HANDLERS: { [K in AiActionType]: ActionHandler<K> } = {
         const dx = x - me.x;
         const dy = y - me.y;
         const squaredDistance = dx * dx + dy * dy;
-        const deltaPx = me.speed * delta;
+        const deltaPx = me.speed.value * delta;
 
         if (squaredDistance <= deltaPx * deltaPx) {
             me.position.set(x, y);

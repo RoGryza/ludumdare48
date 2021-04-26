@@ -61,14 +61,14 @@ export class MainGameState implements GameState {
                     this.resources,
                     Textures.citizen,
                     null,
-                    variables.civilianSpeed.value,
+                    variables.civilianSpeed,
                 );
                 civilian.behaviour = new WanderBehaviour(
                     civilian,
-                    variables.civilianWanderMinMS.value,
-                    variables.civilianWanderMaxMS.value,
-                    variables.civilianWanderMinDist.value,
-                    variables.civilianWanderMaxDist.value,
+                    variables.civilianWanderMinMS,
+                    variables.civilianWanderMaxMS,
+                    variables.civilianWanderMinDist,
+                    variables.civilianWanderMaxDist,
                 );
                 civilian.position.set(screenx + civilianOffset, screeny + civilianOffset);
                 this.camera.addChild(civilian);

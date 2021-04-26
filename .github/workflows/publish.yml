@@ -1,7 +1,7 @@
 name: publish
 on:
   push:
-    breanchs: [ main ]
+    branches: [ main ]
 jobs:
   publish-gh-pages:
     runs-on: ubuntu-latest

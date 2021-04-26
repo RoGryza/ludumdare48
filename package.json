@@ -6,7 +6,7 @@
   "license": "GPL-3.0-or-later",
   "scripts": {
     "dev": "parcel index.html",
-    "build": "parcel build index.html"
+    "build": "parcel build --public-url ./ --no-source-maps --out-dir docs index.html"
   },
   "alias": {
     "assets": "/assets"

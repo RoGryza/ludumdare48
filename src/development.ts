@@ -1,33 +1,24 @@
+import * as PIXI from 'pixi.js';
+
 export type VariableTypes = {
     playerSpeed: number,
     handOffset: number,
+
     stageWidth: number,
     stageHeight: number,
+
+    civilianSpeed: number,
+    civilianWanderMinMS: number,
+    civilianWanderMaxMS: number,
+    civilianWanderMinDist: number,
+    civilianWanderMaxDist: number,
 }
 
 export type Variables = {
     [K in keyof VariableTypes]: Variable<VariableTypes[K]>
 }
 
-export class VariableChangeEvent<T> extends Event {
-    constructor(public oldValue: T, public newValue: T) {
-        super("change");
-    }
-}
-
-export class VariableValidityEvent extends Event {
-    constructor(public error: string | null, public raw: string) {
-        super("validity");
-    }
-}
-
-type EventTypeMap<T> = {
-    change: VariableChangeEvent<T>,
-    validity: VariableValidityEvent,
-}
-
-export abstract class Variable<T> extends EventTarget {
-    private _error?: string = null;
+export abstract class Variable<T> extends PIXI.utils.EventEmitter<'change'> {
     public readonly defaultValue: T;
 
     protected constructor(private _value: T) {
@@ -39,6 +30,10 @@ export abstract class Variable<T> extends EventTarget {
         return this._value;
     }
 
+    public override emit(event: 'change', newValue: T, oldValue: T): boolean {
+        return super.emit(event, newValue, oldValue);
+    }
+
     public set value(value: T) {
         if (value === this._value) {
             return;
@@ -46,22 +41,15 @@ export abstract class Variable<T> extends EventTarget {
 
         const old = this._value;
         this._value = value;
-        if (!this.dispatchEvent(new VariableChangeEvent(old, value))) {
-            this._value = old;
-        }
-    }
-
-    public get valid(): boolean {
-        return this._error === null;
+        this.emit('change', value, old);
     }
 
     // Specialize for EventTypeMap
-    public addEventListener<K extends keyof EventTypeMap<T>>(
-        type: K,
-        listener: (this: this, ev: EventTypeMap<T>[K]) => void,
-        options?: boolean | AddEventListenerOptions,
-    ): void {
-        super.addEventListener(type, listener, options);
+    public on(
+        eventName: 'change',
+        listener: (this: this, newValue: T, oldValue: T) => void,
+    ): this {
+        return super.on(eventName, listener);
     }
 
     public render(): HTMLElement {
@@ -74,18 +62,13 @@ export abstract class Variable<T> extends EventTarget {
 
     protected inputChanged(raw: string) {
         let newValue: T;
-        const wasValid = this.valid;
         try {
             newValue = this.parseValue(raw);
         } catch (e) {
-            this.dispatchEvent(new VariableValidityEvent(e.toString(), raw));
+            console.error(e);
             return;
         }
         this.value = newValue;
-        this._error = null;
-        if (!wasValid) {
-            this.dispatchEvent(new VariableValidityEvent(null, raw));
-        }
     }
 
     public formatValue(value: T): string {
@@ -138,8 +121,8 @@ export class DevelopmentPanel {
 
             const textNode = document.createElement('span');
             textNode.innerText = variable.formatValue(variable.value);
-            variable.addEventListener('change', function(e) {
-                textNode.innerText = this.formatValue(e.newValue);
+            variable.on('change', function(newValue) {
+                textNode.innerText = this.formatValue(newValue);
             });
 
             const rowNode = document.createElement('div');

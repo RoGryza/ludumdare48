@@ -1,12 +1,11 @@
 import * as PIXI from 'pixi.js';
-import { DevelopmentPanel } from '../development';
 import { inputState } from '../input';
 import { Resources, Textures, variables } from '../states/index';
 import { Person } from './person';
 
 export class Player extends Person {
     public constructor(resources: Resources) {
-        super(resources, Textures.player);
+        super(resources, Textures.player, Textures.fingergun);
     }
 
     public update(app: PIXI.Application, bounds: PIXI.Rectangle, cx: number, cy: number, delta: number) {

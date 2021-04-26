@@ -1,8 +1,9 @@
 import * as PIXI from 'pixi.js';
 import { Sprite } from 'pixi.js';
-import { GameState, Resources, variables } from ".";
-import { VariableChangeEvent } from '../development';
+import { GameState, Resources, Textures, variables } from ".";
+import { WanderBehaviour } from '../ai/behaviour';
 import { inputState } from '../input';
+import { AiPerson } from '../objects/aiperson';
 import { Player } from "../objects/player";
 
 export class MainGameState implements GameState {
@@ -27,8 +28,8 @@ export class MainGameState implements GameState {
             this.bounds.endFill();
         };
         this.camera.addChildAt(this.bounds, 0);
-        variables.stageWidth.addEventListener("change", this._onChangeStage);
-        variables.stageHeight.addEventListener("change", this._onChangeStage);
+        variables.stageWidth.on("change", this._onChangeStage);
+        variables.stageHeight.on("change", this._onChangeStage);
     }
 
     afterEnter(): void {
@@ -49,24 +50,46 @@ export class MainGameState implements GameState {
             for (let j = 0; j < hscreens; ++j) {
                 const screenx = j * width;
                 const screeny = i * height;
+
                 const offset = 20.0;
                 const forest = new PIXI.Sprite(this.resources.forest.texture);
                 forest.position.set(screenx + offset, screeny + offset);
                 this.camera.addChild(forest);
+
+                const civilianOffset = height - 50.0;
+                const civilian = new AiPerson(
+                    this.resources,
+                    Textures.citizen,
+                    null,
+                    variables.civilianSpeed.value,
+                );
+                civilian.behaviour = new WanderBehaviour(
+                    civilian,
+                    variables.civilianWanderMinMS.value,
+                    variables.civilianWanderMaxMS.value,
+                    variables.civilianWanderMinDist.value,
+                    variables.civilianWanderMaxDist.value,
+                );
+                civilian.position.set(screenx + civilianOffset, screeny + civilianOffset);
+                this.camera.addChild(civilian);
             }
         }
     }
 
     beforeExit(): void {
-        variables.stageWidth.removeEventListener("change", this._onChangeStage);
-        variables.stageHeight.removeEventListener("change", this._onChangeStage);
-        this.app.stage.removeChildren();
-        this.bounds.destroy({ children: true });
-        this.camera.destroy({ children: true });
-        this.crosshairSprite.destroy({ children: true });
+        variables.stageWidth.off("change", this._onChangeStage);
+        variables.stageHeight.off("change", this._onChangeStage);
+        const removed = this.app.stage.removeChildren();
+        for (const child of removed) {
+            child.destroy({ children: true });
+        }
     }
 
     update(delta: number): GameState {
+        for (const aiPerson of AiPerson.ALIVE) {
+            aiPerson.update(delta);
+        }
+
         const bounds = new PIXI.Rectangle(0, 0, variables.stageWidth.value, variables.stageHeight.value);
         const { width, height } = this.app.renderer.screen;
         this.player.update(this.app, bounds, this.crosshairSprite.x - width / 2, this.crosshairSprite.y - height /2, delta);

@@ -10,8 +10,15 @@ export interface GameState {
 export const variables: Variables = {
     playerSpeed: new RangeVariable(200),
     handOffset: new RangeVariable(32),
+
     stageWidth: new RangeVariable(2000.0),
     stageHeight: new RangeVariable(2000.0),
+
+    civilianSpeed: new RangeVariable(1),
+    civilianWanderMinMS: new RangeVariable(2000.0),
+    civilianWanderMaxMS: new RangeVariable(8000.0),
+    civilianWanderMinDist: new RangeVariable(50.0),
+    civilianWanderMaxDist: new RangeVariable(500.0),
 };
 
 export enum Textures {

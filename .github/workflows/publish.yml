@@ -25,6 +25,7 @@ jobs:
         git config --global user.email 'trololo@automated.trolololo'
         git fetch origin gh-pages gh-pages
         git checkout gh-pages
+        git merge main
         rm -rf docs
         yarn build
         ln -s ../assets docs

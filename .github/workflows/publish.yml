@@ -20,6 +20,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-yarn-
     - run: yarn install
+    # TODO symlinks dont seem to work..
     - name: publish
       run: |
         git config --global user.name 'Automated'
@@ -29,7 +30,6 @@ jobs:
         git checkout gh-pages
         rm -rf docs
         mv dist cocs
-        // TODO symlinks don't seem to work..
         cp -r assets docs && rm -r docs/raw
         touch docs/.nojekyll
         git add docs
